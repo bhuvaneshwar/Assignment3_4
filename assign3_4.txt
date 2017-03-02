@@ -1,0 +1,104 @@
+1. Explain HDFS federation and High availability
+
+
+HDFS Federation:
+
+	Two major components are :
+		*Namespace
+		*Block Storage Service
+
+	Namespace : 
+		
+		- Its supports the entire namespaces related to the file system operations.
+
+		- It includes directories, files and blocks.
+
+	Block Storage Service : 
+
+		- It has two major components : 
+			* Block Management
+			*Storage : 
+		
+		* Block Management : 
+
+			Manages the  replica of placement, block replications and delete blocks that are over replicated.
+
+			Block related operations are supported.
+
+			It maintains the location of the blocks.
+
+		* Storage : 
+
+			Datanodes provide the storing blocks on the local file system and allows read/write access.
+
+			A single NameNode manages the namespace for configuration.
+
+
+* Multiple Namenodes : 
+
+		The Namenodes are federated and are independent which doesnt require coordination with each other.
+
+		Datanodes sends periodic heart beats and block reports.
+
+		The Datanodes are used as storage for blocks
+
+		Each datanodes registers with all the namenodes in the cluster
+
+
+* Block Pool :
+
+		It is a set of blocks that belongs to a single namespace.
+
+		Datanodes stores blocks for all the block pools in the cluster
+
+
+HDFS High Availibility :
+
+		the Namenode was a single point of failure in a HDFS cluster in hadoop 1.X .
+
+		Due to name node failure the entire cluster goes down .
+
+	High Availibility provides the running of two name nodes on a single cluster. 
+
+	So incase of fialure another namenode comes into action.
+
+	The applications are then made up with RAS features (ie) reliability,availability and serviceability.
+
+	The hadoop 2.0 overcomes the above SPOF problem by providing multiple name nodes.
+
+	The main aim of high availability is to provide availability to big data applications 24/7.
+
+	
+
+
+
+
+2. How HDFS handles failures while writing data
+
+	Recovery Methods: 
+
+		1)Lease recovery
+                2)Block recovery
+                3)Pipeline recovery
+
+	* The file is divided into blockes while the user writes it. 
+
+	* The file access follows multi reader and single writer semantics.
+
+	* the blocks are replicated many times and the replicated copies are stored on the data nodes.
+
+	* replication factor represents the number of replicas that are stored on the data node.
+
+	* the number of nodes in the pipeline is found using the replication factor.
+
+	* In pipeline recovery the data written on sequential blocks,in which  blocks 
+	  are splitted into packets and submitted on the data node.
+
+	* When user writes with  help of pipeline recovery mode ,if the block fails it 
+	  will ask with name node for a new block.
+
+	* if pipeline itself fails the client rebuilds the pipeline
+
+	* the datanode itself takes it out by closing the connections during data streaming failure
+
+	* it rebuilds the pipeline with remaining data nodes During close failure.
